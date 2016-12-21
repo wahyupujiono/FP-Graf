@@ -165,39 +165,39 @@ namespace Prim
             weightA.Add(25);
             weightA.Add(10);
             weightA.Add(20);
-            weightA.Add(15);
+            weightA.Add(22);
             adjB.Add(c);
             adjB.Add(d);
             adjB.Add(a);
-            weightB.Add(22);
-            weightB.Add(13);
+            weightB.Add(7);
+            weightB.Add(3);
             weightB.Add(5);
             adjC.Add(d);
             adjC.Add(b);
             weightC.Add(30);
-            weightC.Add(22);
+            weightC.Add(7);
             adjD.Add(e);
             adjD.Add(a);
             adjD.Add(b);
             weightD.Add(17);
             weightD.Add(25);
-            weightD.Add(13);
+            weightD.Add(3);
             adjE.Add(f);
             adjE.Add(a);
             adjE.Add(d);
-            weightE.Add(7);
+            weightE.Add(13);
             weightE.Add(10);
             weightE.Add(17);
             adjF.Add(g);
             adjF.Add(a);
             adjF.Add(e);
-            weightF.Add(3);
+            weightF.Add(15);
             weightF.Add(20);
-            weightF.Add(7);
+            weightF.Add(13);
             adjG.Add(a);
             adjG.Add(f);
+            weightG.Add(22);
             weightG.Add(15);
-            weightG.Add(3);
 
             graph.Add(a);
             graph.Add(b);
@@ -253,17 +253,18 @@ namespace Prim
             }
 
             pi[0] = -1;
-
+   
             for (int i = 0; i < n; i++)
             {
                 u[i] = i;
                 v[i] = pi[i];
             }
 
+
             // reorder the edges in the minimum spanning tree
-            
-            for (int i = 0; i <= n - 1; i++)
+            for (int i = 0; i < n - 1; i++)
           {
+               
                 for (int j = i + 1; j < n; j++)
                 {
                     Node nodeI = graph[u[i]];
@@ -271,6 +272,7 @@ namespace Prim
 
                     if (v[i] >= v[j] && nodeI.Key > nodeJ.Key)
                     {
+
                         int t = u[i];
 
                         u[i] = u[j];
@@ -280,7 +282,9 @@ namespace Prim
                         v[j] = t;
                     }
                 }
-            }
+            } 
+
+
         }
 
         private void calculateXY(int id)
@@ -290,6 +294,18 @@ namespace Prim
 
             x = Width / 2 + (int)(Width * Math.Cos(2 * id * Math.PI / n) / 4.0);
             y = Height / 2 + (int)(Width * Math.Sin(2 * id * Math.PI / n) / 4.0);
+        }
+
+        private int getSmallInteger(int a, int b)
+        {
+            if (a > b)
+            {
+                return b;
+            }
+            else
+            {
+                return a;
+            }
         }
 
         private void draw(Graphics g)
@@ -303,12 +319,17 @@ namespace Prim
                 List<Node> nodeList = queue.NodeList;
                 Pen pen = new Pen(Color.Black);
                 SolidBrush textBrush = new SolidBrush(Color.White);
-                //SolidBrush weightBrush = new SolidBrush(Color.Black);
+                SolidBrush weightBrush = new SolidBrush(Color.Black);
 
                 for (int i = 0; i <= index; i++)
                 {
                     if (v[i] != -1)
                     {
+                        char[] ch = new char[1];
+
+                        ch[0] = (char)('a' + u[i]);
+
+                        string str2 = new string(ch);
 
                         calculateXY(u[i]);
                         x1 = x + (Width / 2) / n / 2;
@@ -316,7 +337,14 @@ namespace Prim
                         calculateXY(v[i]);
                         x2 = x + (Width / 2) / n / 2;
                         y2 = y + (Width / 2) / n / 2;
-                        g.DrawLine(pen, x1, y1, x2, y2);                        
+                        g.DrawLine(pen, x1, y1, x2, y2);
+
+                        // Get middle point of edge
+                        int middleX = getSmallInteger(x2, x1) + Math.Abs(x2 - x1) / 2;
+                        int middleY = getSmallInteger(y2, y1) + Math.Abs(y2 - y1) / 2;
+
+                        g.DrawString(str2, font, weightBrush, new PointF(middleX - 5, middleY + 2));
+
                     }
 
 
@@ -333,7 +361,7 @@ namespace Prim
                     g.DrawString(str, font,
                         textBrush, (float)(x + (Width / 2) / n / 2) - 12f,
                         (float)(y + (Width / 2) / n / 2) - 12f);
-
+                    
 
                     if (v[i] != -1)
                     {
